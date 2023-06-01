@@ -11,8 +11,14 @@ blogsRouter.get('/:id', (req, res, next) => {
     const id = req.params.id
 
     Blog.findById(id)
-    .then(result => res.json(result))
-    .catch(err => next(err))
+        .then(result => {
+            if(result != null){
+                res.json(result)
+            }else{
+                res.status(404).end()
+            }
+        })
+        .catch(err => next(err))
 });
 
 blogsRouter.post('/', (req, res, next) => {
@@ -48,6 +54,24 @@ blogsRouter.delete('/:id', (req, res, next) => {
 
     Blog.findByIdAndDelete(id)
         .then(() => res.status(204).end())
+        .catch(err => next(err))
+})
+
+blogsRouter.put('/:id', (req, res, next) => {
+    const id = req.params.id
+    const body = req.body
+
+    const blog = {
+        title: body.title,
+        author: body.author,
+        url: body.url,
+        like: body.likes
+    }
+
+    Blog.findByIdAndUpdate(id, blog, {new: true, runValidators: true, context: 'query'})
+        .then(updatedNote => {
+            res.json(updatedNote)
+        })
         .catch(err => next(err))
 })
 
