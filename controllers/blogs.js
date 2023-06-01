@@ -43,4 +43,12 @@ blogsRouter.post('/', (req, res, next) => {
         .catch(err => next(err))
 })
 
+blogsRouter.delete('/:id', (req, res, next) => {
+    const id = req.params.id
+
+    Blog.findByIdAndDelete(id)
+        .then(() => res.status(204).end())
+        .catch(err => next(err))
+})
+
 module.exports = blogsRouter;
